@@ -1,6 +1,7 @@
 export async function markup(/** @type {import("@notml/core").oom} */ oom) {
   await Promise.all([
     import('https://cdn.jsdelivr.net/npm/@material/mwc-top-app-bar-fixed@0.25.3/+esm'),
+    import('https://cdn.jsdelivr.net/npm/@material/mwc-select@0.25.3/+esm'),
     import('https://cdn.jsdelivr.net/npm/@material/mwc-textfield@0.25.3/+esm'),
     import('https://cdn.jsdelivr.net/npm/@material/mwc-button@0.25.3/+esm')
   ])
@@ -15,8 +16,11 @@ export async function markup(/** @type {import("@notml/core").oom} */ oom) {
       '.space': { margin: '8px' }
     })
 
-    /** @type {import("@material/mwc-textfield").TextField} */ // @ts-ignore
-    room = oom.mwcTextfield({ class: 'space', required: true, label: 'Комната' }).dom
+    /** @type {import("@material/mwc-select").Select} */ // @ts-ignore
+    room = oom.mwcSelect({ class: 'space', required: true, label: 'Комната' }, oom
+      .mwcListItem({ selected: true, value: 'demo' }, 'Демо сцена')
+    ).dom
+
     /** @type {import("@material/mwc-textfield").TextField} */ // @ts-ignore
     username = oom.mwcTextfield({ class: 'space', required: true, label: 'Ваше имя' }).dom
 
