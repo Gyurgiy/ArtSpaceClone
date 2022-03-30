@@ -4,6 +4,13 @@ export async function markup(/** @type {import("@notml/core").oom} */ oom) {
   })
   const url = new URL(window.location.href)
   const isArtist = (url.searchParams.get('username') || '').toLocaleLowerCase() === 'artist'
+  let hasMic = isArtist
+
+  if (hasMic) {
+    const media = await navigator.mediaDevices.getUserMedia({ audio: true }).catch(() => false)
+
+    hasMic = !!media
+  }
 
   await loadingLib('https://cdn.jsdelivr.net/npm/aframe@1.3.0/dist/aframe-master.js')
   await loadingLib('https://cdn.jsdelivr.net/npm/socket.io-client@4.4.1/dist/socket.io.js')
@@ -25,46 +32,16 @@ export async function markup(/** @type {import("@notml/core").oom} */ oom) {
 
   await new Promise(resolve => { script.onload = () => resolve() })
 
-  const scene = oom.aScene({ id: 'main-scene', networkedScene: `room: basic; debug: false; adapter: easyrtc; audio: ${isArtist};` })
+  const assets = oom.aAssets({ id: 'main-assets' })
+  const scene = oom.aScene({
+    id: 'main-scene',
+    networkedScene: `room: basic; debug: false; adapter: easyrtc; audio: ${hasMic};`
+  }, assets)
 
   oom(window.document.body, scene)
 
-  await import('./scene/aframe-templates.js').then(({ markup }) => markup(oom))
-
-  const assets = oom.aAssets(oom
-    .img({
-      id: 'grid',
-      src: 'https://img.gs/bbdkhfbzkk/stretch/https://i.imgur.com/25P1geh.png',
-      crossorigin: 'anonymous'
-    })
-    .img({
-      id: 'sky',
-      src: 'https://img.gs/bbdkhfbzkk/2048x2048,stretch/https://i.imgur.com/WqlqEkq.jpg',
-      crossorigin: 'anonymous'
-    }))
-  const player = oom
-    .aEntity({
-      id: 'player',
-      networked: 'template:#avatar-template;attachTemplateToLocal:false;',
-      position: '0 1.6 0',
-      spawnInCircle: 'radius:3',
-      movementControls: 'constrainToNavMesh: true; speed:0.2;',
-      lookControls: 'pointerLockEnabled: true'
-    }, oom
-      .aEntity({ camera: true })
-      .aSphere({ class: 'head', visible: 'false', randomColor: true }))
-  const world = oom
-    .aEntity({
-      position: '0 0 0',
-      geometry: 'primitive: plane; width: 10000; height: 10000;',
-      rotation: '-90 0 0',
-      material: 'src: #grid; repeat: 10000 10000; transparent: true; metalness:0.6; roughness: 0.4; sphericalEnvMap: #sky;'
-    })
-    .aEntity({ light: 'color: #ccccff; intensity: 1; type: ambient;', visible: '' })
-    .aEntity({ light: 'color: #ffaaff; intensity: 1.5', position: '5 5 5' })
-    .aSky({ src: '#sky', rotation: '0 -90 0' })
-
-  scene(assets, player, world)
+  await import('./scene/aframe-world.js').then(({ markup }) => markup(oom, assets, scene))
+  await import('./scene/aframe-avatars.js').then(({ markup }) => markup(oom, assets, scene))
 
   class SceneActions extends oom.extends(HTMLElement) {
 
@@ -80,14 +57,14 @@ export async function markup(/** @type {import("@notml/core").oom} */ oom) {
 
     enableMicrophone = true
 
-    micIcon = oom.mwcIcon({ slot: 'icon' }, 'mic')
+    micIcon = oom.mwcIcon({ slot: 'icon' }, hasMic ? 'mic' : 'mic_off')
     template = () => {
       const tmpl = oom()
 
       if (isArtist) {
         tmpl(oom
           .mwcFab({
-            onclick: () => this.toggleMicrophone(),
+            onclick: () => { if (hasMic) this.toggleMicrophone() },
             ...{ mini: true, label: 'Mic' }
           }, this.micIcon))
       }
