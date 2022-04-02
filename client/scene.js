@@ -4,6 +4,7 @@ export async function markup(/** @type {import("@notml/core").oom} */ oom) {
   })
   const url = new URL(window.location.href)
   const isArtist = (url.searchParams.get('username') || '').toLocaleLowerCase() === 'artist'
+  const room = url.searchParams.get('room')
   let hasMic = isArtist
   const style = document.createElement('style')
 
@@ -42,7 +43,7 @@ export async function markup(/** @type {import("@notml/core").oom} */ oom) {
   const assets = oom.aAssets({ id: 'main-assets' })
   const scene = oom.aScene({
     id: 'main-scene',
-    networkedScene: `room: basic; debug: false; adapter: easyrtc; audio: ${hasMic};`
+    networkedScene: `room: ${room}; debug: false; adapter: easyrtc; audio: ${hasMic};`
   }, assets)
 
   oom(window.document.body, scene)

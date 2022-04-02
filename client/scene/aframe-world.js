@@ -1,8 +1,11 @@
-export function markup(
+export async function markup(
   /** @type {import("@notml/core").oom} */ oom,
   /** @type {import("@notml/core").OOMElementProxy} */ assets,
   /** @type {import("@notml/core").OOMElementProxy} */ scene
 ) {
+  const url = new URL(window.location.href)
+  const room = url.searchParams.get('room')
+
   assets(oom
     .img({
       id: 'grid',
@@ -24,4 +27,6 @@ export function markup(
     .aEntity({ light: 'color: #ccccff; intensity: 1; type: ambient;', visible: '' })
     .aEntity({ light: 'color: #ffaaff; intensity: 1.5', position: '5 5 5' })
     .aSky({ src: '#sky', rotation: '0 -90 0' }))
+
+  await import(`./room/${room}.js`).then(({ markup }) => markup(oom, assets, scene))
 }
