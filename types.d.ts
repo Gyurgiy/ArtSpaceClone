@@ -1,4 +1,4 @@
-declare module 'https://cdn.jsdelivr.net/npm/notml@0.1.0-pre.14/core.js' {
+declare module 'https://cdn.jsdelivr.net/npm/notml@0.1.0-pre.17/core.js' {
   export * from '@notml/core'
 }
 

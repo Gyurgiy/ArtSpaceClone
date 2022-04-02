@@ -1,4 +1,14 @@
 export async function markup(/** @type {import("@notml/core").oom} */ oom) {
+  const style = document.createElement('style')
+
+  style.innerHTML = `
+    login-form .content { display: flex; flex-direction: column }
+    login-form .login { display: flex; justify-content: flex-end }
+    login-form .space { margin: 8px; }
+  `
+
+  oom(document.head, style)
+
   await Promise.all([
     import('https://cdn.jsdelivr.net/npm/@material/mwc-top-app-bar-fixed@0.25.3/+esm'),
     import('https://cdn.jsdelivr.net/npm/@material/mwc-select@0.25.3/+esm'),
@@ -10,11 +20,12 @@ export async function markup(/** @type {import("@notml/core").oom} */ oom) {
   class LoginForm extends oom.extends(HTMLElement) {
 
     static tagName = 'login-form'
-    static style = oom.style({
-      '.content': { display: 'flex', flexDirection: 'column' },
-      '.login': { display: 'flex', justifyContent: 'flex-end' },
-      '.space': { margin: '8px' }
-    })
+    // https://github.com/nodutilus/notml/issues/2
+    // static style = oom.style({
+    //   '.content': { display: 'flex', flexDirection: 'column' },
+    //   '.login': { display: 'flex', justifyContent: 'flex-end' },
+    //   '.space': { margin: '8px' }
+    // })
 
     /** @type {import("@material/mwc-select").Select} */ // @ts-ignore
     room = oom.mwcSelect({ class: 'space', required: true, label: 'Комната' }, oom
@@ -22,7 +33,7 @@ export async function markup(/** @type {import("@notml/core").oom} */ oom) {
     ).dom
 
     /** @type {import("@material/mwc-textfield").TextField} */ // @ts-ignore
-    username = oom.mwcTextfield({ class: 'space', required: true, label: 'Ваше имя' }).dom
+    username = oom.mwcTextfield({ class: 'space', required: true, label: 'Ваше имя (A-Z a-z)', pattern: '[\\w ().]+' }).dom
 
     template = oom
       .mwcTopAppBarFixed({ dense: true, centertitle: true }, oom
@@ -39,7 +50,7 @@ export async function markup(/** @type {import("@notml/core").oom} */ oom) {
       const room = this.room.value
       const username = this.username.value
 
-      if (room && username) {
+      if (room && username && this.username.checkValidity()) {
         url.searchParams.set('room', room)
         url.searchParams.set('username', username)
 

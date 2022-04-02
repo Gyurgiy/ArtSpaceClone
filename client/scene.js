@@ -5,6 +5,13 @@ export async function markup(/** @type {import("@notml/core").oom} */ oom) {
   const url = new URL(window.location.href)
   const isArtist = (url.searchParams.get('username') || '').toLocaleLowerCase() === 'artist'
   let hasMic = isArtist
+  const style = document.createElement('style')
+
+  style.innerHTML = `
+    scene-actions { opacity: 0.7; position: fixed; bottom: 8px; left: 8px; }
+  `
+
+  oom(document.head, style)
 
   if (hasMic) {
     const media = await navigator.mediaDevices.getUserMedia({ audio: true }).catch(() => false)
@@ -46,14 +53,15 @@ export async function markup(/** @type {import("@notml/core").oom} */ oom) {
   class SceneActions extends oom.extends(HTMLElement) {
 
     static tagName = 'scene-actions'
-    static style = oom.style({
-      'scene-actions': {
-        opacity: '0.7',
-        position: 'fixed',
-        bottom: '8px',
-        left: '8px'
-      }
-    })
+    // https://github.com/nodutilus/notml/issues/2
+    // static style = oom.style({
+    //   'scene-actions': {
+    //     opacity: '0.7',
+    //     position: 'fixed',
+    //     bottom: '8px',
+    //     left: '8px'
+    //   }
+    // })
 
     enableMicrophone = true
 
