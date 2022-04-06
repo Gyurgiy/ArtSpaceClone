@@ -3,9 +3,12 @@ export async function markup(/** @type {import("@notml/core").oom} */ oom) {
     oom(window.document.head, oom.script({ src, onload: () => resolve() }))
   })
   const url = new URL(window.location.href)
-  const isArtist = (url.searchParams.get('username') || '').toLocaleLowerCase() === 'artist'
+  const userName = url.searchParams.get('username') || ''
+  const isArtist = userName.toLocaleLowerCase() === 'artist'
+  const isPegasVr = userName.toLocaleLowerCase() === 'pegasvr'
   const room = url.searchParams.get('room')
-  let hasMic = isArtist
+  const isSpeaker = isArtist || isPegasVr
+  let hasMic = isSpeaker
   const style = document.createElement('style')
 
   style.innerHTML = `
@@ -26,6 +29,7 @@ export async function markup(/** @type {import("@notml/core").oom} */ oom) {
   //               'https://cdn.jsdelivr.net/npm/open-easyrtc@2.0.13/api/easyrtc.js'
   await loadingLib('https://cdn.jsdelivr.net/gh/open-easyrtc/open-easyrtc@socket.io-4/api/easyrtc.js')
   await loadingLib('https://cdn.jsdelivr.net/npm/aframe-extras@6.1.1/dist/aframe-extras.js')
+  await loadingLib('https://cdn.jsdelivr.net/npm/aframe-thumb-controls-component@2.0.2/dist/aframe-thumb-controls-component.js')
   await loadingLib('https://cdn.jsdelivr.net/npm/networked-aframe@0.9.1/dist/networked-aframe.js')
 
   await Promise.all([
@@ -70,7 +74,7 @@ export async function markup(/** @type {import("@notml/core").oom} */ oom) {
     template = () => {
       const tmpl = oom()
 
-      if (isArtist) {
+      if (isSpeaker) {
         tmpl(oom
           .mwcFab({
             onclick: () => { if (hasMic) this.toggleMicrophone() },
