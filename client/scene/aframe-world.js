@@ -17,6 +17,7 @@ export async function markup(
       crossorigin: 'anonymous'
     }))
   scene(oom
+    .aEntity({ navMesh: true, gltfModel: '/scene/test-navmesh.gltf' })
     .aEntity({
       position: '0 0 0',
       geometry: 'primitive: plane; width: 10000; height: 10000;',

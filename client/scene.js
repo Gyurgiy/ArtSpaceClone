@@ -22,7 +22,9 @@ export async function markup(/** @type {import("@notml/core").oom} */ oom) {
     hasMic = !!media
   }
 
-  await loadingLib('https://cdn.jsdelivr.net/npm/aframe@1.3.0/dist/aframe-master.js')
+  // https://github.com/n5ro/aframe-extras/issues/369
+  // await loadingLib('https://cdn.jsdelivr.net/npm/aframe@1.3.0/dist/aframe-master.js')
+  await loadingLib('https://cdn.jsdelivr.net/npm/aframe@1.0.4/dist/aframe-master.js')
   await loadingLib('https://cdn.jsdelivr.net/npm/socket.io-client@4.4.1/dist/socket.io.js')
   // https://github.com/open-easyrtc/open-easyrtc/pull/70
   //               'https://cdn.jsdelivr.net/npm/open-easyrtc@2.0.13/api/easyrtc.js'
