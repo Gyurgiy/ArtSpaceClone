@@ -3,8 +3,7 @@ export function markup(
   /** @type {import("@notml/core").OOMElementProxy} */ assets,
   /** @type {import("@notml/core").OOMElementProxy} */ scene
 ) {
-  const url = new URL(window.location.href)
-  const userName = url.searchParams.get('username') || ''
+  const userName = window.localStorage.getItem('username')
   const isArtist = userName.toLocaleLowerCase() === 'artist'
   const isPegasVr = userName.toLocaleLowerCase() === 'pegasvr'
   let pTemplate = 'player-template'

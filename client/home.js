@@ -1,4 +1,7 @@
-export async function markup(/** @type {import("@notml/core").oom} */ oom) {
+export async function markup(
+  /** @type {import("@notml/core").oom} */ oom,
+  /** @type {Function} */ loadPage
+) {
   const style = document.createElement('style')
 
   style.innerHTML = `
@@ -27,34 +30,47 @@ export async function markup(/** @type {import("@notml/core").oom} */ oom) {
     //   '.space': { margin: '8px' }
     // })
 
-    /** @type {import("@material/mwc-select").Select} */ // @ts-ignore
-    room = oom.mwcSelect({ class: 'space', required: true, label: 'Комната' }, oom
-      .mwcListItem({ selected: true, value: 'demo' }, 'Демо сцена')
-    ).dom
+    rooms = [
+      { id: 'demo', name: 'Демо сцена' },
+      { id: 'empty', name: 'Пустая сцена' }
+    ]
 
-    /** @type {import("@material/mwc-textfield").TextField} */ // @ts-ignore
-    username = oom.mwcTextfield({ class: 'space', required: true, label: 'Ваше имя (A-Z a-z)', pattern: '[\\w ().]+' }).dom
+    template = () => {
+      const room = window.localStorage.getItem('room') || 'demo'
+      const username = window.localStorage.getItem('username') || ''
+      const roomElm = oom
+        .mwcSelect({ class: 'space', required: true, label: 'Комната' })
+      const usernameElm = oom
+        .mwcTextfield({ class: 'space', required: true, label: 'Ваше имя (A-Z a-z)', pattern: '[\\w ().]+', value: username })
 
-    template = oom
-      .mwcTopAppBarFixed({ dense: true, centertitle: true }, oom
-        .div({ slot: 'title' }, 'Вход в онлайн галерею'))
-      .div({ class: 'content space' }, this.room, this.username, oom
-        .div({ class: 'login space' }, oom.mwcButton({
-          onclick: () => this.openRoom(),
-          ...{ outlined: true, icon: 'login', label: 'Вход' }
-        })))
+      for (const { id, name } of this.rooms) {
+        roomElm(oom
+          .mwcListItem({ selected: room === id, value: id }, name))
+      }
 
+      /** @type {import("@material/mwc-select").Select} */ // @ts-ignore
+      this.room = roomElm.dom
+      /** @type {import("@material/mwc-textfield").TextField} */ // @ts-ignore
+      this.username = usernameElm.dom
+
+      return oom
+        .mwcTopAppBarFixed({ dense: true, centertitle: true }, oom
+          .div({ slot: 'title' }, 'Вход в онлайн галерею'))
+        .div({ class: 'content space' }, this.room, this.username, oom
+          .div({ class: 'login space' }, oom.mwcButton({
+            onclick: () => this.openRoom(),
+            ...{ outlined: true, icon: 'login', label: 'Вход' }
+          })))
+    }
 
     openRoom() {
-      const url = new URL(window.location.href)
       const room = this.room.value
       const username = this.username.value
 
       if (room && username && this.username.checkValidity()) {
-        url.searchParams.set('room', room)
-        url.searchParams.set('username', username)
-
-        window.location.href = url.href
+        window.localStorage.setItem('room', room)
+        window.localStorage.setItem('username', username)
+        loadPage('scene')
       }
     }
 

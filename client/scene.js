@@ -2,11 +2,10 @@ export async function markup(/** @type {import("@notml/core").oom} */ oom) {
   const loadingLib = src => new Promise(resolve => {
     oom(window.document.head, oom.script({ src, onload: () => resolve() }))
   })
-  const url = new URL(window.location.href)
-  const userName = url.searchParams.get('username') || ''
+  const room = window.localStorage.getItem('room')
+  const userName = window.localStorage.getItem('username')
   const isArtist = userName.toLocaleLowerCase() === 'artist'
   const isPegasVr = userName.toLocaleLowerCase() === 'pegasvr'
-  const room = url.searchParams.get('room')
   const isSpeaker = isArtist || isPegasVr
   let hasMic = isSpeaker
   const style = document.createElement('style')

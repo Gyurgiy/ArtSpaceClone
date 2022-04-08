@@ -3,8 +3,7 @@ export async function markup(
   /** @type {import("@notml/core").OOMElementProxy} */ assets,
   /** @type {import("@notml/core").OOMElementProxy} */ scene
 ) {
-  const url = new URL(window.location.href)
-  const room = url.searchParams.get('room')
+  const room = window.localStorage.getItem('room')
 
   assets(oom
     .img({
