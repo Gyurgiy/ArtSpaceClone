@@ -31,7 +31,11 @@ export async function markup(/** @type {import("@notml/core").oom} */ oom) {
   await loadingLib('https://cdn.jsdelivr.net/gh/open-easyrtc/open-easyrtc@socket.io-4/api/easyrtc.js')
   await loadingLib('https://cdn.jsdelivr.net/npm/aframe-extras@6.1.1/dist/aframe-extras.js')
   await loadingLib('https://cdn.jsdelivr.net/npm/aframe-thumb-controls-component@2.0.2/dist/aframe-thumb-controls-component.js')
-  await loadingLib('https://cdn.jsdelivr.net/npm/networked-aframe@0.9.1/dist/networked-aframe.js')
+  await loadingLib('https://cdn.jsdelivr.net/npm/aframe-teleport-controls@0.3.1/dist/aframe-teleport-controls.js')
+  // https://github.gitop.top/networked-aframe/networked-aframe/issues/280
+  // await loadingLib('https://cdn.jsdelivr.net/npm/networked-aframe@0.9.1/dist/networked-aframe.js')
+  await loadingLib('https://cdn.jsdelivr.net/npm/networked-aframe@0.8.3/dist/networked-aframe.js')
+
 
   await Promise.all([
     import('https://cdn.jsdelivr.net/npm/@material/mwc-fab@0.25.3/+esm')
