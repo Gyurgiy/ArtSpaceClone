@@ -7,7 +7,8 @@
     "start": "node server/app.js"
   },
   "dependencies": {
-    "express": "^4.17.3",
+    "fastify": "^3.28.0",
+    "fastify-static": "^4.6.1",
     "socket.io": "^4.4.1",
     "open-easyrtc": "github:open-easyrtc/open-easyrtc#socket.io-4"
   },

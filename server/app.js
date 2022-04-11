@@ -1,26 +1,33 @@
-import { createServer } from 'http'
-import express from 'express'
+import { resolve } from 'path'
+import { fastify } from 'fastify'
+import fastifyStatic from 'fastify-static'
 import * as socketIo from 'socket.io'
 import easyrtc from 'open-easyrtc'
 
-
 // Порт запуска сервиса, по умолчанию 8080
 const port = process.env.PORT || 8080
-// Экземпляр приложения Express
-const app = express()
-// Express http сервер
-const webServer = createServer(app)
+// Экземпляр приложения
+const app = fastify({ logger: { level: 'error' } })
+// Старт приложения по готовности
+const start = async () => {
+  try {
+    // Старт сервиса на указанном порту
+    await app.listen(port)
+    console.log('listening on http://localhost:' + port)
+  } catch (err) {
+    app.log.error(err)
+    process.exit(1)
+  }
+}
 
 // Добавление каталога со статикой
-app.use(express.static('client'))
-
-// Старт сервиса на указанном порту
-webServer.listen(port, () => {
-  console.log('listening on http://localhost:' + port)
+app.register(fastifyStatic, {
+  root: resolve('client'),
+  prefix: '/'
 })
 
 // Старт Socket.io
-const socketServer = new socketIo.Server(webServer)
+const socketServer = new socketIo.Server(app.server)
 const myIceServers = [
   { url: 'stun:stun.l.google.com:19302' },
   { url: 'stun:stun1.l.google.com:19302' },
@@ -28,10 +35,13 @@ const myIceServers = [
   { url: 'stun:stun3.l.google.com:19302' }
 ]
 
+easyrtc.setOption('logLevel', 'error')
 easyrtc.setOption('appIceServers', myIceServers)
+easyrtc.setOption('demosEnable', false)
+easyrtc.setOption('apiEnable', false)
 
 // Старт EasyRTC
-easyrtc.listen(app, socketServer, null, (err, rtcRef) => {
+easyrtc.listen(null, socketServer, null, (err, rtcRef) => {
   if (err) {
     console.error(err)
     process.exit()
@@ -42,3 +52,6 @@ easyrtc.listen(app, socketServer, null, (err, rtcRef) => {
     appObj.events.defaultListeners.roomCreate(appObj, creatorConnectionObj, roomName, roomOptions, callback)
   })
 })
+
+// Старт сервиса
+start()
