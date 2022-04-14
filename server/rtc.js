@@ -12,7 +12,7 @@ export default fastifyPlugin(function routes(app, opts, done) {
     { url: 'stun:stun3.l.google.com:19302' }
   ]
 
-  easyrtc.setOption('logLevel', 'error')
+  easyrtc.setOption('logLevel', app.env.debugMode ? 'debug' : 'error')
   easyrtc.setOption('appIceServers', myIceServers)
   easyrtc.setOption('demosEnable', false)
   easyrtc.setOption('apiEnable', false)

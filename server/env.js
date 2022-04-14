@@ -4,8 +4,14 @@ import fastifyPlugin from 'fastify-plugin'
 export default fastifyPlugin(function routes(app, opts, done) {
   const localEnvFile = './.local-env.json'
   const env = {
+    // Режим отладки
+    debugMode: process.env.DEBUG_MODE === 'true',
     // Порт запуска сервиса, по умолчанию 8080
-    port: process.env.PORT || 8080
+    port: process.env.PORT || 8080,
+    // Параметры подключения к сервису почты
+    defaultMailService: process.env.DEFAULT_MAIL_SERVICE,
+    defaultMailUser: process.env.DEFAULT_MAIL_USER,
+    defaultMailPass: process.env.DEFAULT_MAIL_PASS
   }
 
   if (existsSync(localEnvFile)) {

@@ -20,7 +20,10 @@
       "skipFiles": [
         "<node_internals>/**"
       ],
-      "program": "${workspaceFolder}/server/app.js"
+      "program": "${workspaceFolder}/server/app.js",
+      "env": {
+        "DEBUG_MODE": "true"
+      }
     }
   ]
 }

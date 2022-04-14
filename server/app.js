@@ -1,7 +1,7 @@
 import { fastify } from 'fastify'
 
 // Экземпляр приложения
-const app = fastify({ logger: { level: 'error' } })
+const app = fastify({ logger: { level: process.env.DEBUG_MODE === 'true' ? 'debug' : 'error' } })
 
 // Параметры окружения и опции подключения
 app.register(import('./env.js'))
