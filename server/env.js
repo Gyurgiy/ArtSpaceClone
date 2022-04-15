@@ -1,4 +1,5 @@
 import { existsSync, readFileSync } from 'fs'
+import { resolve } from 'path'
 import fastifyPlugin from 'fastify-plugin'
 
 export default fastifyPlugin(function routes(app, opts, done) {
@@ -11,7 +12,9 @@ export default fastifyPlugin(function routes(app, opts, done) {
     // Параметры подключения к сервису почты
     defaultMailService: process.env.DEFAULT_MAIL_SERVICE,
     defaultMailUser: process.env.DEFAULT_MAIL_USER,
-    defaultMailPass: process.env.DEFAULT_MAIL_PASS
+    defaultMailPass: process.env.DEFAULT_MAIL_PASS,
+    // Парамеры подключения к БД
+    connectionString: process.env.DATABASE_URL || `sqlite:${resolve('.local-database.sqlite')}`
   }
 
   if (existsSync(localEnvFile)) {

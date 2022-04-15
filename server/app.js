@@ -11,6 +11,8 @@ app.register(import('./static.js'))
 app.register(import('./rtc.js'))
 // Сервис рассылки писем
 app.register(import('./mail.js'))
+// База даных
+app.register(import('./database.js'))
 // Старт приложения по готовности
 app.ready(async () => {
   try {
