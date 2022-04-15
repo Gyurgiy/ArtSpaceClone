@@ -17,6 +17,7 @@
     "fastify-static": "4.6.1",
     "fastify-url-data": "3.0.3",
     "sequelize": "6.19.0",
+    "pg": "8.7.3",
     "nodemailer": "6.7.3",
     "socket.io": "4.4.1",
     "open-easyrtc": "github:open-easyrtc/open-easyrtc#socket.io-4"
