@@ -19,6 +19,14 @@ export function markup(
       id: 'model-pegasvr',
       src: '/scene/models/SlavaAvatar.glb'
     })
+    .aAssetItem({
+      id: 'left-hand-model',
+      src: '/scene/models/leftHandHigh.glb'
+    })
+    .aAssetItem({
+      id: 'right-hand-model',
+      src: '/scene/models/rightHandHigh.glb'
+    })
     .template({ id: 'pegasvr-template' }, oom
       .aEntity({ class: 'avatar', networkedAudioSource: true }))
     .template({ id: 'pegasvr-template-head' }, oom
@@ -52,11 +60,25 @@ export function markup(
             .aSphere({ class: 'pupil', color: '#000', position: '0 0 -1', scale: '0.2 0.2 0.2' }))
           .aSphere({ class: 'eye', color: '#efefef', position: '-0.16 0.1 -0.35', scale: '0.12 0.12 0.12' }, oom
             .aSphere({ class: 'pupil', color: '#000', position: '0 0 -1', scale: '0.2 0.2 0.2' })))))
+    .template({ id: 'left-hand-template' }, oom
+      .aEntity(oom.aGltfModel({ class: 'tracked-left-hand', rotation: '0 0 90', src: '#left-hand-model' })))
+    .template({ id: 'right-hand-template' }, oom
+      .aEntity(oom.aGltfModel({ class: 'tracked-right-hand', rotation: '0 0 -90', src: '#right-hand-model' })))
   )
 
   // @ts-ignore
   window.NAF.schemas.add({
     template: '#pegasvr-template',
+    components: ['position', 'rotation']
+  })
+  // @ts-ignore
+  window.NAF.schemas.add({
+    template: '#left-hand-template',
+    components: ['position', 'rotation']
+  })
+  // @ts-ignore
+  window.NAF.schemas.add({
+    template: '#right-hand-template',
     components: ['position', 'rotation']
   })
   // @ts-ignore
@@ -147,6 +169,7 @@ export function markup(
         .aSphere({ class: 'head', randomColor: true }))
       .aEntity({
         class: 'leftController',
+        networked: 'template: #left-hand-template',
         handControls: 'hand: left; handModelStyle: lowPoly; color: #15ACCF',
         trackedControls: true,
         viveControls: 'hand: left',
@@ -157,6 +180,7 @@ export function markup(
       })
       .aEntity({
         class: 'rightController',
+        networked: 'template: #right-hand-template',
         handControls: 'hand: right; handModelStyle: lowPoly; color: #15ACCF',
         trackedControls: true,
         viveControls: 'hand: right',
